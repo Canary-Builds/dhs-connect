@@ -1,0 +1,3 @@
+- insert:
+    - id: llm-dsh-connect
+      name: @canary-builds/dsh-connect
