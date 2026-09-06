@@ -25,6 +25,6 @@ For subsequent releases, configure a GitHub Actions trusted publisher in the npm
 - Environment: `npm` (matches the GitHub environment, as in dsh-splash)
 - Permit direct `npm publish` if the settings offer allowed actions.
 
-The **Publish to npm** workflow runs on `v*` tag pushes, with a manual retry available on a tag. It checks the package version, tests and packed contents, then publishes using OIDC with provenance; no npm token secret is required. Configure the npm-side trust before pushing the next release tag. It is deliberately separate from the GitHub Release workflow so an unconfigured npm account cannot break GitHub releases.
+The **Publish to npm** workflow runs on pushes to `main` and `v*` tags, with a manual retry available on either. Bump `package.json` to a new stable version to publish automatically from main. Commits with an already-published version skip publication. A serialized publish job prevents main and tag runs from publishing the same version concurrently; registry errors stop the workflow instead of guessing. It checks the package version, tests and packed contents, then publishes using OIDC with provenance; no npm token secret is required. Configure the npm-side trust before pushing the next version bump. It is deliberately separate from the GitHub Release workflow so an unconfigured npm account cannot break GitHub releases.
 
 See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) for current account requirements. The workflow installs npm 11 to satisfy the documented minimum of npm 11.5.1.
