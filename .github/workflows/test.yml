@@ -16,4 +16,4 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm test
-      - run: npm pack --dry-run
+      - run: npm run test:package

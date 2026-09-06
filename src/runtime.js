@@ -3,7 +3,7 @@ import { homedir } from 'node:os';
 import { delimiter, join, resolve } from 'node:path';
 import { CodexError } from './errors.js';
 
-export const VERSION = '0.3.0';
+export const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 export const PROVIDER = 'openai-codex';
 export function configuration(env = process.env) {
   const file = env.DSH_CONNECT_CONFIG || join(env.DSH_HOME || join(homedir(), '.dsh'), 'connect.json');

@@ -1,0 +1,19 @@
+# Directory submission
+
+Submit through the [DSH Directory issue form](https://github.com/alexchenzl/dsh-plugin-directory/issues/new?template=plugin-submission.yml) after verifying the released install command. This is a community directory; listing does not mean DeepSeek endorsement. This repository has not automatically submitted an issue.
+
+Use these fields:
+
+- Title: `[Plugin]: DSH Connect`
+- Plugin package URL: `https://github.com/Canary-Builds/dhs-connect`
+- Primary category: **Models & Providers (models)**
+- One-line description: Connects DeepSeek Harness to ChatGPT models through the official Codex app-server, with sign-in, model discovery and streaming tool calls.
+- Install command (also in README.md):
+
+```sh
+dsh plugin --profile web add https://github.com/Canary-Builds/dhs-connect/releases/download/v0.3.1/canary-builds-dsh-connect-0.3.1.tgz
+```
+
+The package is public, declares `dsh.bundle.patch`, and includes its patch and prebuilt client. Those are the directory's structural eligibility requirements; its checks do not execute or audit the plugin. npm publication is not a prerequisite.
+
+Read the [directory contribution rules](https://github.com/alexchenzl/dsh-plugin-directory/blob/master/CONTRIBUTING.md) before submitting. The upstream [Harness contribution guide](https://github.com/deepseek-ai/deepseek-harness/blob/master/CONTRIBUTING.md) also recommends the `dsh-plugin` GitHub topic for discovery.

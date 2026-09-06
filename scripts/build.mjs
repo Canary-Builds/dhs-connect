@@ -9,4 +9,4 @@ new Script(bundle, { filename: 'lib/client.js' });
 await writeFile(new URL('lib/client.js', root), bundle);
 // JSON is valid YAML and safely quotes scoped package names beginning with @.
 await writeFile(new URL('cordis.patch.yml', root), JSON.stringify([{ insert: [{ id: 'llm-dsh-connect', name: pkg.name }] }], null, 2) + '\n');
-console.log(`Built client registration for ${pkg.name}`);
+console.error(`Built client registration for ${pkg.name}`);

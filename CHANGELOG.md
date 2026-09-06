@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1 — 2026-09-06
+
+First packaged GitHub release.
+
+- Provide a prebuilt installable Profile Bundle and SHA-256 checksum.
+- Derive runtime version from package metadata to prevent release drift.
+- Validate packed contents and installed entry points in CI.
+- Add tag-driven GitHub releases, optional npm trusted publishing, and submission documentation.
+
 ## 0.3.0 — DSH Connect
 
 - Rename the package, client module, Settings panel, HTTP route and CLI commands.

@@ -4,20 +4,17 @@ Connect DeepSeek Harness to ChatGPT models through the official Codex app-server
 
 DSH Connect is a community Cordis plugin with a model-provider adapter and a web Settings panel. The first connector supports Codex/ChatGPT; it is not tied to a particular model. The provider ID is `openai-codex`.
 
-**Status:** development version 0.3.0. This repository is the source of truth. The package is intentionally marked private while release and submission are pending. No npm release or marketplace listing is implied by the commands below.
-
-## Install from this repository
+## Install
 
 Requires Node.js 22.19+ and an installed official Codex CLI. Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Both upstream interfaces are evolving; other versions and operating systems need validation.
 
+Install the prebuilt [v0.3.1 release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.1); no npm account or plugin build step is required:
+
 ```sh
-git clone https://github.com/Canary-Builds/dhs-connect.git
-cd dhs-connect
-npm test
-npm pack
-dsh plugin --profile web add ./canary-builds-dsh-connect-0.3.0.tgz
-dsh plugin --profile headless add ./canary-builds-dsh-connect-0.3.0.tgz
+dsh plugin --profile web add https://github.com/Canary-Builds/dhs-connect/releases/download/v0.3.1/canary-builds-dsh-connect-0.3.1.tgz
 ```
+
+Use `--profile headless` instead for the CLI profile. Release assets include `SHA256SUMS` for checking downloaded packages. npm publication is separate; the scoped name is reserved in this source as `@canary-builds/dsh-connect`, but npm availability is not implied.
 
 Restart your running Harness instance after installation. Open **Settings → DSH Connect**, sign in with ChatGPT, and select a model from the normal model picker. Install only the profiles you use. A pnpm workspace-root profile may require its existing `ignoreWorkspaceRootCheck` setting or the package-manager workspace-root option.
 
@@ -69,7 +66,14 @@ Replace `user@harness-host` with your SSH destination. The bundled `dsh-connect-
 ## Development
 
 ```sh
+git clone https://github.com/Canary-Builds/dhs-connect.git
+cd dhs-connect
+```
+
+
+```sh
 npm test
+npm run test:package
 npm run doctor
 npm run test:live
 ```
@@ -85,6 +89,8 @@ This version supports text and text tool results. Image attachments and per-turn
 Matching continuations reuse an ephemeral Codex thread. When that state no longer matches the supplied DSH history, the connector rebuilds from a role-labeled JSON transcript. This adds prompt tokens and does not restore hidden reasoning or replay completed tool execution.
 
 Settings controls require loopback transport and same-origin requests and reject cross-site requests. Remote access requires a trusted deployment proxy; the plugin does not create public endpoints or add authentication to a proxy. Native stderr is not forwarded to Harness logs because it can include request data. Diagnostics filter common credential patterns.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for changes, [RELEASING.md](RELEASING.md) for versioned releases and npm publishing, and [DIRECTORY.md](DIRECTORY.md) for a ready-to-copy directory submission.
 
 ## Upstream references
 

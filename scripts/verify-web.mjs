@@ -1,3 +1,4 @@
+import { VERSION } from '../src/runtime.js';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { createRequire } from 'node:module';
@@ -44,7 +45,7 @@ assert.match(markup, /Models/);
 const hash = createHash('sha1').update(downloaded.get(row.url)).digest('hex').slice(0, 12);
 assert.equal(row.rev, hash);
 const status = JSON.parse(await get('/api/dsh-connect'));
-assert.equal(status.pluginVersion, '0.3.0');
+assert.equal(status.pluginVersion, VERSION);
 assert.equal(status.authenticated, true);
 assert.ok(status.models.length > 0);
 assert.equal(status.connectionIssue, null);
