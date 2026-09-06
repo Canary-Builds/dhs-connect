@@ -1,6 +1,6 @@
 {
   "name": "@canary-builds/dsh-connect",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Connect DeepSeek Harness to ChatGPT models through the Codex app-server",
   "license": "MIT",
   "author": "Canary Builds",

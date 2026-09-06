@@ -15,7 +15,7 @@ Do not move published tags or replace a released version's package. Fixes get a 
 
 The npm scope must belong to your npm user or organization; owning the GitHub organization does not grant the npm scope. Confirm access to `@canary-builds` before publishing. If unavailable, change the scope consistently in metadata and regenerate/test the client and patch before cutting a new release.
 
-Version 0.3.1 was published to npm on 2026-09-06 using a temporary vault-backed publishing credential. No token was stored in GitHub Actions. The npm-side trusted publisher must still be configured before automated releases can publish.
+Version 0.3.1 was published to npm on 2026-09-06 using a temporary vault-backed publishing credential. No token was stored in GitHub Actions. Subsequent versions use the configured npm-side trusted publisher through GitHub Actions.
 
 For subsequent releases, configure a GitHub Actions trusted publisher in the npm package settings:
 

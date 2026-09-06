@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 — 2026-09-06
+
+- Publish new stable versions automatically from main through npm OIDC trusted publishing.
+- Skip already-published versions and serialize publishing runs.
+- Document the direct npm install command and OAuth sign-in without an OpenAI API key.
+
 ## 0.3.1 — 2026-09-06
 
 First packaged GitHub release.
