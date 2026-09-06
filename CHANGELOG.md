@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 — 2026-09-06
+
+- Add a compact Settings footer with issue-reporting and Canary Builds website links.
+
 ## 0.3.2 — 2026-09-06
 
 - Publish new stable versions automatically from main through npm OIDC trusted publishing.

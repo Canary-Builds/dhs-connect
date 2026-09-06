@@ -16,9 +16,9 @@ Install from npm:
 dsh plugin --profile web add @canary-builds/dsh-connect
 ```
 
-Use `--profile headless` instead for the CLI profile. To pin this release, use `@canary-builds/dsh-connect@0.3.2`. No npm account or plugin build step is required to install the public package.
+Use `--profile headless` instead for the CLI profile. To pin this release, use `@canary-builds/dsh-connect@0.3.3`. No npm account or plugin build step is required to install the public package.
 
-A prebuilt tarball and `SHA256SUMS` are also available in the [v0.3.2 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.2).
+A prebuilt tarball and `SHA256SUMS` are also available in the [v0.3.3 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.3).
 
 Restart your running Harness instance after installation. Open **Settings → DSH Connect**, sign in with ChatGPT, and select a model from the normal model picker. Install only the profiles you use. A pnpm workspace-root profile may require its existing `ignoreWorkspaceRootCheck` setting or the package-manager workspace-root option.
 
