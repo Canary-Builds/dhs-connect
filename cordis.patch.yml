@@ -1,3 +1,10 @@
-- insert:
-    - id: llm-dsh-connect
-      name: @canary-builds/dsh-connect
+[
+  {
+    "insert": [
+      {
+        "id": "llm-dsh-connect",
+        "name": "@canary-builds/dsh-connect"
+      }
+    ]
+  }
+]

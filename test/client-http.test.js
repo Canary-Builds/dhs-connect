@@ -11,6 +11,8 @@ test('generated client registers exactly the package name and its settings secti
   let registration;
   vm.runInNewContext(readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8'), { window: { __ModuleLoader__: { load: value => { registration = value; } } } });
   assert.equal(registration.id, pkg.name);
+  const patch = JSON.parse(readFileSync(new URL('../cordis.patch.yml', import.meta.url), 'utf8'));
+  assert.equal(patch[0].insert[0].name, pkg.name);
   const react = { createElement: (...args) => args, useState: value => [value, () => {}], useEffect() {}, useCallback: fn => fn };
   const client = registration.factory(name => { assert.equal(name, 'react'); return react; });
   let slot;
