@@ -1,5 +1,7 @@
 # DSH Connect
 
+![DSH Connect — Connect DeepSeek Harness to ChatGPT models using OAuth sign-in](https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/dsh-connect-cover.png)
+
 Connect DeepSeek Harness to ChatGPT models using OAuth sign-in through the official Codex app-server, without requiring an OpenAI API key.
 
 DSH Connect is a community Cordis plugin with a model-provider adapter and a web Settings panel. The first connector supports Codex/ChatGPT; it is not tied to a particular model. The provider ID is `openai-codex`.
