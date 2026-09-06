@@ -24,6 +24,19 @@ Restart your running Harness instance after installation. Open **Settings → DS
 
 Remove the earlier `dsh-plugin-codex-astra` or `dsh-openai-oauth` adapter from a profile before installing this one: both claim the same `openai-codex` provider route. Keep your existing Codex sign-in directory to preserve authentication.
 
+## Screenshots
+
+Select a screenshot to view it at full size.
+
+<table>
+  <tr>
+    <td align="center" valign="top"><a href="https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/screenshots/settings-desktop.png"><img src="https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/screenshots/settings-desktop.png" width="480" alt="Desktop connection settings and model catalog"></a><br>Desktop connection settings and model catalog</td>
+    <td align="center" valign="top"><a href="https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/screenshots/settings-mobile.png"><img src="https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/screenshots/settings-mobile.png" width="280" alt="Connection settings on a narrow screen"></a><br>Connection settings on a narrow screen</td>
+  </tr>
+</table>
+
+The narrow-screen example also uses [DSH Mobile UI](https://github.com/Canary-Builds/dsh-mobile-ui). Models shown depend on your account and plugin version.
+
 ## Features
 
 - Account model discovery merged with a curated fallback; unlisted model IDs can still be requested.
