@@ -22,9 +22,9 @@ For subsequent releases, configure a GitHub Actions trusted publisher in the npm
 - Organization/user: `Canary-Builds`
 - Repository: `dhs-connect`
 - Workflow filename: `publish.yml`
-- Environment: leave empty (this workflow declares none)
+- Environment: `npm` (matches the GitHub environment, as in dsh-splash)
 - Permit direct `npm publish` if the settings offer allowed actions.
 
-Run the **Publish to npm** workflow manually on an existing release tag. It only publishes tag refs and uses OIDC with provenance; no npm token secret is required. It is deliberately separate from the GitHub Release workflow so an unconfigured npm account cannot break GitHub releases.
+The **Publish to npm** workflow runs on `v*` tag pushes, with a manual retry available on a tag. It checks the package version, tests and packed contents, then publishes using OIDC with provenance; no npm token secret is required. Configure the npm-side trust before pushing the next release tag. It is deliberately separate from the GitHub Release workflow so an unconfigured npm account cannot break GitHub releases.
 
 See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) for current account requirements. The workflow installs npm 11 to satisfy the documented minimum of npm 11.5.1.

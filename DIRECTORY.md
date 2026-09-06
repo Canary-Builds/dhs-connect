@@ -7,7 +7,7 @@ Use these fields:
 - Title: `[Plugin]: DSH Connect`
 - Plugin package URL: `https://github.com/Canary-Builds/dhs-connect`
 - Primary category: **Models & Providers (models)**
-- One-line description: Connects DeepSeek Harness to ChatGPT models through the official Codex app-server, with sign-in, model discovery and streaming tool calls.
+- One-line description: Connects DeepSeek Harness to ChatGPT models using OAuth sign-in through the official Codex app-server, without requiring an OpenAI API key.
 - Install command (also in README.md):
 
 ```sh
