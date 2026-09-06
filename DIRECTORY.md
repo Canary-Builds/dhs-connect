@@ -11,7 +11,7 @@ Use these fields:
 - Install command (also in README.md):
 
 ```sh
-dsh plugin --profile web add https://github.com/Canary-Builds/dhs-connect/releases/download/v0.3.1/canary-builds-dsh-connect-0.3.1.tgz
+dsh plugin --profile web add @canary-builds/dsh-connect
 ```
 
 The package is public, declares `dsh.bundle.patch`, and includes its patch and prebuilt client. Those are the directory's structural eligibility requirements; its checks do not execute or audit the plugin. npm publication is not a prerequisite.

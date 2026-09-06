@@ -8,13 +8,15 @@ DSH Connect is a community Cordis plugin with a model-provider adapter and a web
 
 Requires Node.js 22.19+ and an installed official Codex CLI. Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Both upstream interfaces are evolving; other versions and operating systems need validation.
 
-Install the prebuilt [v0.3.1 release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.1); no npm account or plugin build step is required:
+Install from npm:
 
 ```sh
-dsh plugin --profile web add https://github.com/Canary-Builds/dhs-connect/releases/download/v0.3.1/canary-builds-dsh-connect-0.3.1.tgz
+dsh plugin --profile web add @canary-builds/dsh-connect
 ```
 
-Use `--profile headless` instead for the CLI profile. Release assets include `SHA256SUMS` for checking downloaded packages. npm publication is separate; the scoped name is reserved in this source as `@canary-builds/dsh-connect`, but npm availability is not implied.
+Use `--profile headless` instead for the CLI profile. To pin the first release, use `@canary-builds/dsh-connect@0.3.1`. No npm account or plugin build step is required to install the public package.
+
+A prebuilt tarball and `SHA256SUMS` are also available in the [v0.3.1 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.1).
 
 Restart your running Harness instance after installation. Open **Settings → DSH Connect**, sign in with ChatGPT, and select a model from the normal model picker. Install only the profiles you use. A pnpm workspace-root profile may require its existing `ignoreWorkspaceRootCheck` setting or the package-manager workspace-root option.
 

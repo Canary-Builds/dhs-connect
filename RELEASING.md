@@ -11,11 +11,11 @@ GitHub release packages work without an npm account. The package uses `@canary-b
 
 Do not move published tags or replace a released version's package. Fixes get a new version. GitHub release checksums provide integrity checking, not a separate signature.
 
-## Optional npm publication
+## npm publication
 
 The npm scope must belong to your npm user or organization; owning the GitHub organization does not grant the npm scope. Confirm access to `@canary-builds` before publishing. If unavailable, change the scope consistently in metadata and regenerate/test the client and patch before cutting a new release.
 
-For the first publication, check out the release tag and use interactive `npm login`, then `npm publish --access public`. Complete npm's browser/2FA flow yourself; do not put tokens in repository files or chat. This is separate from creating a GitHub release.
+Version 0.3.1 was published to npm on 2026-09-06 using a temporary vault-backed publishing credential. No token was stored in GitHub Actions. The npm-side trusted publisher must still be configured before automated releases can publish.
 
 For subsequent releases, configure a GitHub Actions trusted publisher in the npm package settings:
 
