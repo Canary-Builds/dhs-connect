@@ -36,6 +36,13 @@ export function runtime(env = process.env) {
   }
   return { command, env: childEnv };
 }
+export function codexInstalled(env = process.env) {
+  try { runtime(env); return true; }
+  catch (error) {
+    if (error.code === 'CODEX_BINARY_MISSING') return false;
+    throw error;
+  }
+}
 // Harness owns tool execution, its permission checks, and agent delegation.
 export const CODEX_ARGS = [
   ...['shell_tool', 'goals', 'apps', 'browser_use', 'computer_use', 'hooks', 'image_generation', 'in_app_browser', 'multi_agent', 'plugins', 'skill_search', 'tool_suggest', 'unified_exec', 'workspace_dependencies']

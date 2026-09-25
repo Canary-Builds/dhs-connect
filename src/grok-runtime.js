@@ -31,3 +31,10 @@ export function grokRuntime(env = process.env) {
   }
   return { command, env: childEnv, home, cwd: join(tmpdir(), 'dsh-connect-grok') };
 }
+export function grokInstalled(env = process.env) {
+  try { grokRuntime(env); return true; }
+  catch (error) {
+    if (error.code === 'GROK_BINARY_MISSING') return false;
+    throw error;
+  }
+}

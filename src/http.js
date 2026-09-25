@@ -25,15 +25,20 @@ async function commandVersion(resolveLaunch, pattern) {
 export async function binaryVersion() {
   return commandVersion(runtime, /^codex-cli [\w.+-]+/);
 }
-export function createController(server, catalog, adapter, { version = binaryVersion, grok } = {}) {
+export function createController(server, catalog, adapter, { version = binaryVersion, grok, installed = () => true } = {}) {
   let versionPromise;
   let grokVersionPromise;
   async function status(signal) {
     let account;
     let connectionIssue;
-    try { account = await server.account(signal); }
-    catch (error) { if (signal?.aborted) throw error; connectionIssue = safeMessage(error); }
-    const models = await catalog.list(signal);
+    let codexReady = true;
+    try { codexReady = installed() !== false; }
+    catch (error) { if (signal?.aborted) throw error; connectionIssue = safeMessage(error); codexReady = false; }
+    if (codexReady) {
+      try { account = await server.account(signal); }
+      catch (error) { if (signal?.aborted) throw error; connectionIssue = safeMessage(error); if (error.code === 'CODEX_BINARY_MISSING') codexReady = false; }
+    } else if (!connectionIssue) connectionIssue = 'Codex CLI is not installed. ChatGPT is optional; Grok does not need it.';
+    const models = codexReady ? await catalog.list(signal) : [];
     versionPromise ??= version().catch(() => 'unavailable');
     let grokStatus = null;
     if (grok) {
@@ -58,7 +63,7 @@ export function createController(server, catalog, adapter, { version = binaryVer
       };
     }
     return {
-      pluginVersion: VERSION, codexVersion: await versionPromise, authenticated: account?.type === 'chatgpt',
+      pluginVersion: VERSION, codexVersion: await versionPromise, installed: codexReady, authenticated: account?.type === 'chatgpt',
       planType: account?.type === 'chatgpt' ? account.planType ?? null : null,
       models, modelSource: catalog.source, discoveryIssue: catalog.discoveryIssue ?? null,
       connectionIssue: connectionIssue ?? null, activeSessions: adapter.sessions.size,
@@ -79,7 +84,9 @@ export function createController(server, catalog, adapter, { version = binaryVer
       const path = new URL(req.url ?? '/', 'http://localhost').pathname;
       if (req.method === 'GET' && path === API_PATH) return json(res, 200, await status(controller.signal));
       if (req.method === 'POST' && path === `${API_PATH}/refresh`) {
-        await catalog.refresh(controller.signal, true);
+        let codexReady = true;
+        try { codexReady = installed() !== false; } catch { codexReady = false; }
+        if (codexReady) await catalog.refresh(controller.signal, true).catch(error => { if (controller.signal.aborted) throw error; });
         if (grok) await grok.catalog.refresh(controller.signal, true).catch(error => { if (controller.signal.aborted) throw error; });
         return json(res, 200, await status(controller.signal));
       }

@@ -6,6 +6,7 @@
 - Sign in with the official Grok CLI (`grok login --device-auth`) from Settings or `dsh-connect-grok-login`.
 - ChatGPT/Codex sign-in, the `openai-codex` route, and the Codex app-server path are unchanged.
 - Either account, or both, can be connected. The model picker lists both catalogs.
+- Grok works when the Codex CLI is not installed. ChatGPT is registered only when Codex is available.
 
 ## 0.3.3 — 2026-09-06
 

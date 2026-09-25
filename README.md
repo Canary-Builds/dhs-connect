@@ -8,7 +8,7 @@ DSH Connect is a community Cordis plugin with model-provider adapters and a web 
 
 ## Install
 
-Requires Node.js 22.19+ and an installed official Codex CLI, Grok CLI, or both. Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Grok uses `grok agent stdio` from the current Grok CLI. Both upstream interfaces are evolving; other versions and operating systems need validation.
+Requires Node.js 22.19+. ChatGPT needs the official Codex CLI. Grok needs the official Grok CLI. Install either one, or both. Grok does not require Codex to be installed. Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Grok uses `grok agent stdio` from the current Grok CLI. Both upstream interfaces are evolving; other versions and operating systems need validation.
 
 Install from npm:
 
