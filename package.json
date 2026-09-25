@@ -1,7 +1,7 @@
 {
   "name": "@canary-builds/dsh-connect",
-  "version": "0.3.3",
-  "description": "Connect DeepSeek Harness to ChatGPT models through the Codex app-server",
+  "version": "0.4.0",
+  "description": "Connect DeepSeek Harness to ChatGPT or Grok with OAuth sign-in",
   "license": "MIT",
   "author": "Canary Builds",
   "repository": {
@@ -16,6 +16,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "codex",
+    "grok",
+    "xai",
     "connector"
   ],
   "type": "module",
@@ -27,6 +29,7 @@
   },
   "bin": {
     "dsh-connect-login": "src/login.js",
+    "dsh-connect-grok-login": "src/grok-login.js",
     "dsh-connect-doctor": "src/doctor.js"
   },
   "files": [

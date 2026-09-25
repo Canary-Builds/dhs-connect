@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import { EventEmitter } from 'node:events';
 import { trustedRequest, createController, API_PATH } from '../src/http.js';
 import { ModelCatalog } from '../src/models.js';
+import { GrokCatalog } from '../src/grok-models.js';
 const request = (overrides = {}) => ({ method: 'GET', url: API_PATH, socket: { remoteAddress: '127.0.0.1' }, headers: { host: '127.0.0.1:3080' }, ...overrides });
 test('generated client registers exactly the package name and its settings section', () => {
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
@@ -38,6 +39,58 @@ test('settings and picker share the curated fallback even when account discovery
   assert.equal(status.authenticated, true);
   assert.equal(status.modelSource, 'curated');
   assert.equal(JSON.stringify(status).includes('access_token'), false);
+});
+test('grok sign-in accepts an xAI address and can be absent', async () => {
+  const server = { account: async () => ({ type: 'chatgpt' }), models: async () => [], request: async () => { throw new Error('codex login'); } };
+  const grokCatalog = new GrokCatalog({ discoverModels: async () => [] });
+  let loggedOut = false;
+  const grok = {
+    server: { account: async () => ({ type: 'none' }), close() {} },
+    catalog: grokCatalog,
+    adapter: { sessions: new Map(), async clear() { loggedOut = true; } },
+    login: { snapshot: () => ({ pending: false }), async start() { return { authUrl: 'https://auth.x.ai/device', userCode: 'ABCD-EFGH' }; }, async logout() {} },
+  };
+  const controller = createController(server, new ModelCatalog(server), { sessions: new Map() }, { version: async () => 'codex-cli test', grok });
+  const status = await controller.status();
+  assert.equal(status.authenticated, true);
+  assert.equal(status.grok.authenticated, false);
+  assert.ok(status.grok.models.some(model => model.id === 'grok-4'));
+  const res = new EventEmitter();
+  res.writeHead = code => { res.status = code; };
+  res.end = body => { res.body = JSON.parse(body); };
+  await controller.route.handler(request({ method: 'POST', url: API_PATH + '/grok/login' }), res);
+  assert.equal(res.status, 200);
+  assert.equal(res.body.userCode, 'ABCD-EFGH');
+  grok.login.start = async () => ({ authUrl: 'https://evil.example/phish', userCode: null });
+  await controller.route.handler(request({ method: 'POST', url: API_PATH + '/grok/login' }), res);
+  assert.equal(res.status, 503);
+  await controller.route.handler(request({ method: 'POST', url: API_PATH + '/grok/logout' }), res);
+  assert.equal(loggedOut, true);
+});
+test('Grok status and sign-in work when Codex is not installed', async () => {
+  let codexCalled = false;
+  const server = { account: async () => { codexCalled = true; throw new Error('codex should not start'); }, models: async () => [], request: async () => ({}) };
+  const grokCatalog = new GrokCatalog({ discoverModels: async () => [] });
+  const grok = {
+    server: { account: async () => ({ type: 'grok' }), close() {} },
+    catalog: grokCatalog,
+    adapter: { sessions: new Map(), async clear() {} },
+    login: { snapshot: () => ({ pending: false }), async start() { return { authUrl: 'https://auth.x.ai/device', userCode: 'WXYZ-1234' }; }, async logout() {} },
+  };
+  const controller = createController(server, new ModelCatalog(server), { sessions: new Map() }, { version: async () => 'unavailable', installed: () => false, grok });
+  const status = await controller.status();
+  assert.equal(codexCalled, false);
+  assert.equal(status.installed, false);
+  assert.equal(status.authenticated, false);
+  assert.deepEqual(status.models, []);
+  assert.equal(status.grok.authenticated, true);
+  assert.ok(status.grok.models.some(model => model.id === 'grok-4'));
+  const res = new EventEmitter();
+  res.writeHead = code => { res.status = code; };
+  res.end = body => { res.body = JSON.parse(body); };
+  await controller.route.handler(request({ method: 'POST', url: API_PATH + '/grok/login' }), res);
+  assert.equal(res.status, 200);
+  assert.equal(res.body.userCode, 'WXYZ-1234');
 });
 test('untrusted requests cannot sign out or initiate login', async () => {
   let called = false;

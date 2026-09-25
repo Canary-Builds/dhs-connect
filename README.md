@@ -2,25 +2,64 @@
 
 ![DSH Connect — Connect DeepSeek Harness to ChatGPT models using OAuth sign-in](https://raw.githubusercontent.com/Canary-Builds/dhs-connect/main/assets/dsh-connect-cover.png)
 
-Connect DeepSeek Harness to ChatGPT models using OAuth sign-in through the official Codex app-server, without requiring an OpenAI API key.
+Connect DeepSeek Harness to ChatGPT or Grok using OAuth sign-in. ChatGPT goes through the official Codex app-server, without an OpenAI API key. Grok goes through the official Grok CLI, without an xAI API key. Connect either account, or both.
 
-DSH Connect is a community Cordis plugin with a model-provider adapter and a web Settings panel. The first connector supports Codex/ChatGPT; it is not tied to a particular model. The provider ID is `openai-codex`.
+DSH Connect is a community Cordis plugin with model-provider adapters and a web Settings panel. The ChatGPT provider ID is `openai-codex`. The Grok provider ID is `xai-grok`. Neither provider is tied to one model.
 
 ## Install
 
-Requires Node.js 22.19+ and an installed official Codex CLI. Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Both upstream interfaces are evolving; other versions and operating systems need validation.
+DSH does not discover plugins by scanning `node_modules`. Running `npm install @canary-builds/dsh-connect` in your home directory downloads files into `~/node_modules` and then does nothing: DSH never looks there. A package is loaded only when both of these are true:
 
-Install from npm:
+1. It is installed inside the profile workspace, `~/.dsh/profiles/<name>` (for the browser UI, `~/.dsh/profiles/web`).
+2. Its package name is listed in that profile's `package.json` under `dsh.profile.bundles`.
+
+A dependency that is installed but missing from `bundles` stays invisible. DSH does not scan `dependencies` and turn them into plugins.
+
+Install with the profile command. It runs the package manager inside the profile and appends this package to `bundles`:
 
 ```sh
 dsh plugin --profile web add @canary-builds/dsh-connect
 ```
 
-Use `--profile headless` instead for the CLI profile. To pin this release, use `@canary-builds/dsh-connect@0.3.3`. No npm account or plugin build step is required to install the public package.
+Use `--profile headless` for the CLI profile. To pin this release after it is published, use `@canary-builds/dsh-connect@0.4.0`. No npm account or plugin build step is required to install the public package.
 
-A prebuilt tarball and `SHA256SUMS` are also available in the [v0.3.3 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.3).
+If `dsh plugin` is unavailable, do both steps yourself. Do not remove the bundles already in the file (`@deepseek-ai/dsh-base`, `@deepseek-ai/dsh-web-app`, and any others):
 
-Restart your running Harness instance after installation. Open **Settings → DSH Connect**, sign in with ChatGPT, and select a model from the normal model picker. Install only the profiles you use. A pnpm workspace-root profile may require its existing `ignoreWorkspaceRootCheck` setting or the package-manager workspace-root option.
+```sh
+cd ~/.dsh/profiles/web
+npm install @canary-builds/dsh-connect
+```
+
+```json
+"dsh": { "profile": { "bundles": ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@canary-builds/dsh-connect"] } }
+```
+
+Restart the process that serves that profile, then refresh the browser. For a user service that is `systemctl --user restart dsh-web`. Open **Settings → DSH Connect**, sign in, and pick a model from the normal model picker. Install only the profiles you use. A pnpm workspace-root profile may require its existing `ignoreWorkspaceRootCheck` setting or the package-manager workspace-root option.
+
+[DSH Mobile UI](https://github.com/Canary-Builds/dsh-mobile-ui) is a separate package. Install it the same way (`dsh plugin --profile web add @canary-builds/dsh-mobile-ui`). It is not a dependency of DSH Connect.
+
+A prebuilt tarball and `SHA256SUMS` are in the [v0.4.0 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.4.0).
+
+### ChatGPT and Grok CLIs
+
+This package does not download a model CLI. Each provider needs its own official executable on the `PATH` of the user that runs DSH. Installing one does not install the other.
+
+| Provider | Binary | Required when |
+| --- | --- | --- |
+| ChatGPT | `codex` (official Codex CLI, for example `npm install -g @openai/codex`) | You want ChatGPT. Without it, **Sign in with ChatGPT** fails immediately and the browser popup closes. `dsh-connect-doctor` reports `Codex executable not found`. |
+| Grok | `grok` (official Grok CLI) | You want Grok. Grok does not require Codex to be installed. |
+
+Install the CLI as the same user that runs DSH, then restart DSH. A root-only install does nothing if that user's service cannot execute the binary. Check with `dsh-connect-doctor` from the profile (`~/.dsh/profiles/web/node_modules/.bin/dsh-connect-doctor`). A missing Codex binary is not a failed plugin install: Grok can still sign in.
+
+### Browser on another computer
+
+ChatGPT sends the OAuth callback to `127.0.0.1:1455` on the computer running the browser. Forwarding only the web UI does not complete sign-in. Keep both forwards open until ChatGPT login finishes. `3080` is the usual DSH web port; change it if your server listens elsewhere. `1455` is fixed.
+
+```sh
+ssh -N -o ExitOnForwardFailure=yes -L 3080:127.0.0.1:3080 -L 1455:127.0.0.1:1455 user@harness-host
+```
+
+Grok device login does not use port 1455. Use the code in Settings, or run `dsh-connect-grok-login` on the server. The bundled `dsh-connect-login` command also supports Codex's `--device-auth` option when your account allows it.
 
 Remove the earlier `dsh-plugin-codex-astra` or `dsh-openai-oauth` adapter from a profile before installing this one: both claim the same `openai-codex` provider route. Keep your existing Codex sign-in directory to preserve authentication.
 
@@ -46,7 +85,7 @@ The narrow-screen example also uses [DSH Mobile UI](https://github.com/Canary-Bu
 - Conversation reconstruction after restart, compaction or changed tool definitions.
 - No runtime npm dependencies or automatic binary downloads.
 
-Harness owns tool execution and permissions. The connector disables native Codex tools and delegation features, and does not silently substitute a different model.
+Harness owns tool execution and permissions. The connector disables native Codex tools. Grok is not given shell or filesystem access; a Grok tool request is returned to Harness instead. The connector does not silently substitute a different model.
 
 ## Configuration
 
@@ -58,27 +97,25 @@ Environment variables:
 | --- | --- |
 | `DSH_CODEX_BIN` | Absolute path to the official Codex executable; overrides discovery. |
 | `DSH_CODEX_HOME` | Codex sign-in and configuration directory. |
+| `DSH_GROK_BIN` | Absolute path to the official Grok executable; overrides discovery. |
+| `DSH_GROK_HOME` | Grok sign-in directory. Defaults to `~/.grok`. |
 | `DSH_CONNECT_CONFIG` | Override the configuration-file path. |
-| `DSH_CONNECT_NO_PROXY` | Optional domains to append to the Codex child's `NO_PROXY`. |
+| `DSH_CONNECT_NO_PROXY` | Optional domains to append to the child `NO_PROXY`. |
 
 Alternatively, create `$DSH_HOME/connect.json` (default `~/.dsh/connect.json`):
 
 ```json
 {
   "codexBin": "/absolute/path/to/codex",
-  "codexHome": "/absolute/path/to/codex-home"
+  "codexHome": "/absolute/path/to/codex-home",
+  "grokBin": "/absolute/path/to/grok",
+  "grokHome": "/absolute/path/to/grok-home"
 }
 ```
 
-The optional `noProxy` field contains a comma-separated domain list. Proxy routing is inherited unchanged unless explicitly configured. Do not put credentials in this file; the official Codex executable manages authentication.
+The optional `noProxy` field contains a comma-separated domain list. Proxy routing is inherited unchanged unless explicitly configured. Do not put credentials in this file. The official Codex executable manages ChatGPT authentication, and the official Grok executable manages Grok authentication. Remote ChatGPT sign-in needs the tunnel in [Browser on another computer](#browser-on-another-computer).
 
-For a browser on another machine, forward the callback port before signing in:
-
-```sh
-ssh -N -o ExitOnForwardFailure=yes -L 1455:127.0.0.1:1455 user@harness-host
-```
-
-Replace `user@harness-host` with your SSH destination. The bundled `dsh-connect-login` command also supports Codex's `--device-auth` option when available to your account. Run `dsh-connect-doctor` through your profile's executable environment for diagnostics.
+Tested with DSH 0.1.1-rc.2 and Codex 0.153.4 on Linux. Grok uses `grok agent stdio` from the current Grok CLI. Both upstream interfaces are evolving; other versions and operating systems need validation. Requires Node.js 22.19+.
 
 ## Development
 
@@ -113,6 +150,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for changes, [RELEASING.md](RELEASING.md)
 
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 - [Codex app-server protocol](https://learn.chatgpt.com/docs/app-server)
+- [Grok CLI](https://x.ai/cli)
 - [DSH contribution guidance](https://github.com/deepseek-ai/deepseek-harness/blob/master/CONTRIBUTING.md)
 
 The development history began with the community [dsh-openai-oauth](https://github.com/DGPisces/dsh-openai-oauth) integration. The connector implementation in this repository was subsequently rewritten. DSH Connect is independently maintained by Canary Builds and is not an official DeepSeek or OpenAI product.

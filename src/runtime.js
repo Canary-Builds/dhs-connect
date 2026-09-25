@@ -12,10 +12,10 @@ export function configuration(env = process.env) {
     const config = JSON.parse(readFileSync(file, 'utf8'));
     if (!config || Array.isArray(config) || typeof config !== 'object') throw new Error();
     for (const key of Object.keys(config)) {
-      if (!['codexBin', 'codexHome', 'noProxy'].includes(key) || typeof config[key] !== 'string') throw new Error();
+      if (!['codexBin', 'codexHome', 'grokBin', 'grokHome', 'noProxy'].includes(key) || typeof config[key] !== 'string') throw new Error();
     }
     return config;
-  } catch { throw new CodexError('Invalid DSH Connect configuration. Expected an object containing codexBin, codexHome or noProxy strings.', 'INVALID_CONFIG'); }
+  } catch { throw new CodexError('Invalid DSH Connect configuration. Expected an object containing codexBin, codexHome, grokBin, grokHome or noProxy strings.', 'INVALID_CONFIG'); }
 }
 export function codexHome(env = process.env, config = configuration(env)) {
   const configured = env.DSH_CODEX_HOME?.trim() || config.codexHome;
@@ -35,6 +35,13 @@ export function runtime(env = process.env) {
     childEnv.no_proxy = noProxy;
   }
   return { command, env: childEnv };
+}
+export function codexInstalled(env = process.env) {
+  try { runtime(env); return true; }
+  catch (error) {
+    if (error.code === 'CODEX_BINARY_MISSING') return false;
+    throw error;
+  }
 }
 // Harness owns tool execution, its permission checks, and agent delegation.
 export const CODEX_ARGS = [
