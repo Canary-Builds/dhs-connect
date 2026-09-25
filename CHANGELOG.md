@@ -7,6 +7,7 @@
 - ChatGPT/Codex sign-in, the `openai-codex` route, and the Codex app-server path are unchanged.
 - Either account, or both, can be connected. The model picker lists both catalogs.
 - Grok works when the Codex CLI is not installed. ChatGPT is registered only when Codex is available.
+- Document that DSH only loads this package from the profile workspace and `dsh.profile.bundles`. A home-directory `npm install` does not register it. ChatGPT sign-in also needs the Codex CLI and an SSH forward of both the web port and `1455`.
 
 ## 0.3.3 — 2026-09-06
 
