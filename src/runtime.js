@@ -12,10 +12,10 @@ export function configuration(env = process.env) {
     const config = JSON.parse(readFileSync(file, 'utf8'));
     if (!config || Array.isArray(config) || typeof config !== 'object') throw new Error();
     for (const key of Object.keys(config)) {
-      if (!['codexBin', 'codexHome', 'noProxy'].includes(key) || typeof config[key] !== 'string') throw new Error();
+      if (!['codexBin', 'codexHome', 'grokBin', 'grokHome', 'noProxy'].includes(key) || typeof config[key] !== 'string') throw new Error();
     }
     return config;
-  } catch { throw new CodexError('Invalid DSH Connect configuration. Expected an object containing codexBin, codexHome or noProxy strings.', 'INVALID_CONFIG'); }
+  } catch { throw new CodexError('Invalid DSH Connect configuration. Expected an object containing codexBin, codexHome, grokBin, grokHome or noProxy strings.', 'INVALID_CONFIG'); }
 }
 export function codexHome(env = process.env, config = configuration(env)) {
   const configured = env.DSH_CODEX_HOME?.trim() || config.codexHome;
