@@ -38,7 +38,7 @@ Restart the process that serves that profile, then refresh the browser. For a us
 
 [DSH Mobile UI](https://github.com/Canary-Builds/dsh-mobile-ui) is a separate package. Install it the same way (`dsh plugin --profile web add @canary-builds/dsh-mobile-ui`). It is not a dependency of DSH Connect.
 
-A prebuilt tarball and `SHA256SUMS` for the previous release are in the [v0.3.3 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.3.3). The 0.4.0 release is published from `main`.
+A prebuilt tarball and `SHA256SUMS` are in the [v0.4.0 GitHub release](https://github.com/Canary-Builds/dhs-connect/releases/tag/v0.4.0).
 
 ### ChatGPT and Grok CLIs
 
